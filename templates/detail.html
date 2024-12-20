@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+{{ title }}
+{% endblock title %}
+
+
+{% block main %}
+
+<!--cards-->
+<div class="row row-cols-1 row-cols-md-12 g-4">
+<div class="col">
+  <div class="card h-100">
+    <img src="{{ lesson.photo.url }}" class="card-img-top" alt="Lessons" title="{{ lesson.name }}" data-mdb-tooltip-init/>
+    <div class="card-body">
+        <a href="#">
+            <h5 class="card-title">{{ lesson.name }}</h5>
+        </a>
+      <p class="card-text">
+          <strong>Price:</strong> {{ lesson.price }} $ <br>
+          <strong>Teacher:</strong> {{ lesson.teacher }} <br>
+          <strong>Starts from:</strong> {{ lesson.starts_from }} <br>
+          <strong>Student count:</strong> {{ lesson.student_count }} <br>
+          <strong>About:</strong> {{ lesson.description|linebreaks }}
+      </p>
+    </div>
+    <div class="card-footer d-flex justify-content-around">
+      <small class="text-muted">{{ lesson.starts_from }}</small>
+      <small class="text-muted">{{ lesson.teacher }}</small>
+        <a href="{% url 'lessons_by_courses' lesson.course.id %}">
+            <small>{{ lesson.course }}</small>
+        </a>
+    </div>
+  </div>
+</div>
+</div>
+<!--cards-->
+<div class="mt-5 d-flex justify-content-center">
+    <a href="{% url 'home' %} " class="btn btn-outline-primary btn-rounded" data-mdb-ripple-init  data-mdb-ripple-color="dark">
+        Ortga</a>
+</div>
+{% endblock main %}

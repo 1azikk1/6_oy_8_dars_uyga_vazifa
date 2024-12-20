@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% load my_tags %}
+
+{% block title %}
+{{ title }}
+{% endblock title %}
+
+{% block main %}
+    <!--buttons-->
+      <div>
+            <div class="buttons mb-5 d-flex justify-content-around">
+                {% all_courses as courses %}
+            {% for course in courses %}
+            <div>
+            <a href="{% url 'lessons_by_courses' course.id %}" class="btn btn-outline-primary btn-rounded" data-mdb-ripple-init  data-mdb-ripple-color="dark">
+                {{ course.name }}
+            </a>
+            </div>
+            {% endfor %}
+          </div>
+      </div>
+    <!--buttons-->
+
+    <!--cards-->
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+          {% for lesson in lessons %}
+        <div class="col">
+          <div class="card h-100">
+              <a href="{% url 'detail_lesson' lesson.id %}">
+                    <img src="{{ lesson.photo.url }}" class="card-img-top" title="{{ lesson.name }}" alt="flowers" data-mdb-tooltip-init/>
+              </a>
+            <div class="card-body">
+                <a href="{% url 'detail_lesson' lesson.id %}">
+                    <h5 class="card-title">{{ lesson.name }}</h5>
+                </a>
+              <p class="card-text">
+                  <strong>Teacher:</strong> {{ lesson.teacher }} <br>
+                  <strong>Student count:</strong> {{ lesson.student_count }} <br>
+                  About: {{ lesson.description|truncatewords:20 }}
+              </p>
+            </div>
+            <div class="card-footer d-flex justify-content-around">
+              <small class="text-muted">{{ lesson.starts_from }}</small>
+              <small class="text-muted">{{ lesson.teacher }}</small>
+                <a href="{% url 'lessons_by_courses' lesson.course.id %}">
+                    <small>{{ lesson.course }}</small>
+                </a>
+            </div>
+          </div>
+        </div>
+          {% endfor %}
+      </div>
+    <!--cards-->
+{% endblock main %}

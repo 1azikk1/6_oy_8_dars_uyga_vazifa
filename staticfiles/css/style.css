@@ -1,0 +1,131 @@
+/* style.css */
+
+/* General styles */
+:root {
+  --primary-color: #007bff;
+  --secondary-color: #f8f9fa;
+  --card-hover-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+  --transition-time: 0.3s;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: var(--secondary-color);
+  user-select: none;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 15px;
+}
+
+/* Navbar */
+.navbar {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-brand img {
+  border-radius: 5px;
+}
+
+.nav-link {
+  color: #333;
+  transition: color var(--transition-time);
+}
+
+.nav-link:hover {
+  color: var(--primary-color);
+}
+
+.dropdown-menu {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Main */
+main {
+  padding-top: 20px;
+}
+
+.buttons .btn {
+  width: 150px;
+  margin-bottom: 10px;
+  transition: transform var(--transition-time);
+}
+
+.buttons .btn:hover {
+  transform: translateY(-3px);
+}
+
+
+/* Cards */
+.card {
+  border: none;
+  border-radius: 10px; /* Adding border-radius for rounded corners */
+  overflow: hidden; /* Ensures content doesn't spill out of the card */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Initial shadow for a clean look */
+  transition: transform var(--transition-time), box-shadow var(--transition-time);
+}
+
+.card:hover {
+  transform: translateY(-8px); /* Smooth upward hover effect */
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1); /* Enhanced shadow on hover */
+}
+
+.card-img-top {
+  object-fit: cover; /* Ensures the image covers the area without stretching */
+  border-bottom: 3px solid #f8f9fa; /* Adds a subtle border below the image */
+  transition: transform var(--transition-time);
+}
+
+.card-img-top:hover {
+  transform: scale(1.05); /* Slight zoom effect on image hover */
+}
+
+.card-body {
+  padding: 20px;
+  background-color: #fff; /* Clean background for the card body */
+}
+
+.card-footer {
+  background-color: var(--secondary-color);
+  border-top: 1px solid #ddd;
+  padding: 10px 15px;
+}
+
+.card-footer a {
+  color: var(--primary-color);
+  font-weight: bold;
+  transition: color var(--transition-time), text-decoration var(--transition-time);
+}
+
+.card-footer a:hover {
+  color: #0056b3; /* Slightly darker color on hover */
+  text-decoration: underline;
+}
+
+
+/* Footer */
+footer {
+  background-color: #e9ecef;
+  padding: 20px 0;
+}
+
+footer .mask {
+  transition: background-color var(--transition-time);
+}
+
+footer .mask:hover {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+footer a {
+  color: #333;
+  transition: color var(--transition-time);
+}
+
+footer a:hover {
+  color: var(--primary-color);
+}

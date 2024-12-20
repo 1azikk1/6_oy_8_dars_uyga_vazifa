@@ -1,0 +1,76 @@
+{% load static %}
+{% load my_tags %}
+
+<!--Navbar starts here-->
+<nav class="navbar navbar-expand-lg navbar-light bg-body-tertiary mt-3 mb-5">
+  <!-- Container wrapper -->
+  <div class="container">
+    <!-- Navbar brand -->
+    <a class="navbar-brand me-2" href="{% url 'home' %}">
+      <img
+        src="{% static 'images/nt.jpg' %}"
+        height="35"
+        alt="Najot Talim logo"
+        loading="lazy"
+        style="margin-top: -1px; border-radius: 10px;"
+      />
+    </a>
+
+    <!-- Toggle button -->
+    <button
+      data-mdb-collapse-init
+      class="navbar-toggler"
+      type="button"
+      data-mdb-target="#navbarButtonsExample"
+      aria-controls="navbarButtonsExample"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Collapsible wrapper -->
+    <div class="collapse navbar-collapse" id="navbarButtonsExample">
+      <!-- Left links -->
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'home' %}">Asosiy Sahifa</a>
+        </li>
+      </ul>
+      <!-- Left links -->
+
+      <!--dropdown button-->
+     <div class="dropdown">
+        <button
+          class="btn btn-primary dropdown-toggle"
+          type="button"
+          id="dropdownMenuButton"
+          data-mdb-dropdown-init
+          data-mdb-ripple-init
+          aria-expanded="false"
+        >
+          Courses
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            {% all_courses as courses %}
+          {% for course in courses %}
+          <li><a class="dropdown-item" href="{% url 'lessons_by_courses' course.id %}">{{ course.name }}</a></li>
+          {% endfor %}
+        </ul>
+      </div>
+      <!--dropdown button-->
+
+      <div class="d-flex align-items-center">
+        <button data-mdb-ripple-init type="button" class="btn btn-link px-3 me-2">
+          Login
+        </button>
+        <button data-mdb-ripple-init type="button" class="btn btn-primary me-3">
+          Sign up
+        </button>
+      </div>
+    </div>
+    <!-- Collapsible wrapper -->
+  </div>
+  <!-- Container wrapper -->
+</nav>
+<!--Navbar ends here-->

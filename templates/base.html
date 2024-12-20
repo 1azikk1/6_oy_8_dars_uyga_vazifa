@@ -1,0 +1,36 @@
+{% load static %}
+{% load my_tags %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {% include 'components/_styles.html' %}
+    <title>
+        {% block title %}
+        {% endblock title %}
+    </title>
+</head>
+<body>
+
+<!--navbar-->
+{% include 'components/_navbar.html' %}
+<!--navbar-->
+
+<!--Main starts here-->
+<main class="pt-5 mb-5">
+{% block main %}
+{% endblock main %}
+</main>
+<!--Main ends here-->
+
+<!--footer-->
+{% include 'components/_footer.html' %}
+<!--footer-->
+
+<!--javascript code file-->
+{% include 'components/_scripts.html' %}
+<!--javascript code file-->
+
+</body>
+</html>

@@ -2,6 +2,7 @@ from django.db import models
 
 
 class Course(models.Model):
+    objects = None
     name = models.CharField(max_length=50, unique=True, verbose_name='Kurs nomi')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Qo'shilgan vaqit")
 
@@ -14,10 +15,11 @@ class Course(models.Model):
 
 
 class Lesson(models.Model):
+    objects = None
     name = models.CharField(max_length=50, verbose_name='Dars nomi')
     teacher = models.CharField(max_length=100, verbose_name="O'qituvchi ismi")
     description = models.TextField(null=True, blank=True, verbose_name='Dars haqida')
-    starts_from = models.DateTimeField(default='2024, 1, 1, 08, 00', verbose_name='Boshlanish vaqti')
+    starts_from = models.DateTimeField(default='2024-01-01 08:00', verbose_name='Boshlanish vaqti')
     photo = models.ImageField(upload_to='lessons/photos')
     student_count = models.IntegerField(verbose_name='Talabalar soni')
     price = models.IntegerField(verbose_name='narxi')
@@ -30,3 +32,4 @@ class Lesson(models.Model):
     class Meta:
         verbose_name = 'dars '
         verbose_name_plural = 'darslar'
+        ordering = ('-starts_from',)

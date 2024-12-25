@@ -59,7 +59,8 @@ def add_courses(request):
         form = CourseForm(data=request.POST, files=request.FILES)
         if form.is_valid():
             course = Course.objects.create(**form.cleaned_data)
-            print(course, "qo'shildi!")
+            messages.success(request, "Kurs muvaffaqiyatli tarzda qo'shildi!")
+            return redirect('home')
 
     form = CourseForm()
     context = {

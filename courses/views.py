@@ -102,6 +102,7 @@ def update_lesson(request, lesson_id):
     context = {
         'form': form,
         'photo': lesson.photo,
+        'title': f"{lesson.name}: darsini tahrirlash!"
     }
     return render(request, 'add_lesson.html', context)
 
@@ -114,7 +115,8 @@ def delete_lesson(request, lesson_id):
         return redirect('home')
 
     context = {
-        'lesson': lesson
+        'lesson': lesson,
+        'title': f"{lesson.name}: darsini o'chirish!"
     }
     messages.warning(request, "Ushbu darsni o'chirmoqchimisiz?")
     return render(request, 'confirm_delete.html', context)

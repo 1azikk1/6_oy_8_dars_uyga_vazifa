@@ -19,6 +19,15 @@
 
 <!--Main starts here-->
 <main class="pt-5 mb-5">
+    {% if messages %}
+<ul class="messages d-flex justify-content-center">
+    {% for message in messages %}
+    <li class="alert alert-{% if message.tags == 'error' %}danger {% else %}{{ message.tags }} {% endif %}" id="unordered_list">{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+
 {% block main %}
 {% endblock main %}
 </main>

@@ -12,9 +12,16 @@
 <div class="row row-cols-1 row-cols-md-12 g-4">
 <div class="col">
   <div class="card h-100">
+      {% if lesson.photo %}
     <img src="{{ lesson.photo.url }}" class="card-img-top" alt="Lessons" title="{{ lesson.name }}" data-mdb-tooltip-init/>
-    <div class="card-body">
-        <a href="#">
+      {% endif %}
+    <br>
+      <div class="card-body">
+        <div class="d-flex flex-row-reverse">
+            <a href="{% url 'delete_lesson' lesson.id %}"><i class="fas fa-trash-can"></i></a> &nbsp; &nbsp; &nbsp;
+          <a href="{% url 'update_lesson' lesson.id %}"><i class="fas fa-pen"></i></a>
+      </div>
+        <a href="{% url 'home' %}">
             <h5 class="card-title">{{ lesson.name }}</h5>
         </a>
       <p class="card-text">

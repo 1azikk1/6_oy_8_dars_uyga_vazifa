@@ -1,4 +1,5 @@
 from django.db import models
+from datetime import datetime
 
 
 class Course(models.Model):
@@ -19,8 +20,8 @@ class Lesson(models.Model):
     name = models.CharField(max_length=50, verbose_name='Dars nomi')
     teacher = models.CharField(max_length=100, verbose_name="O'qituvchi ismi")
     description = models.TextField(null=True, blank=True, verbose_name='Dars haqida')
-    starts_from = models.DateTimeField(default='2024-01-01 08:00', verbose_name='Boshlanish vaqti')
-    photo = models.ImageField(upload_to='lessons/photos')
+    starts_from = models.DateTimeField(default=datetime(2024, 1, 1, 8, 0), verbose_name='Boshlanish vaqti')
+    photo = models.ImageField(upload_to='lessons/photos', blank=True, null=True)
     student_count = models.IntegerField(verbose_name='Talabalar soni')
     price = models.IntegerField(verbose_name='narxi')
     is_available = models.BooleanField(default=True, verbose_name='bor yoki yoq')

@@ -17,7 +17,7 @@ class LessonForm(forms.Form):
     }), label="Dars haqida", required=False)
     photo = forms.ImageField(widget=forms.FileInput(attrs={
         'class': 'form-control'
-    }), label='Rasmi')
+    }), label='Rasmi', required=False)
     student_count = forms.IntegerField(widget=forms.NumberInput(attrs={
         'placeholder': "Talabalar soni",
         'class': 'form-control'

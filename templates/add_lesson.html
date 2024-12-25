@@ -8,7 +8,21 @@
 {% block main %}
 <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="Add" class="btn btn-outline-primary btn-rounded">
+<!--    {{ form.as_p }}-->
+    <p>{{ form.name }}</p>
+    <p>{{ form.teacher }}</p>
+    <p>{{ form.description }}</p>
+    {% if photo %}
+    <a href="{{ photo.url }}">{{ photo }}</a>
+    {% endif %}
+    <p>{{ form.photo }}</p>
+    <p>{{ form.student_count }}</p>
+    <p>{{ form.price }}</p>
+    <p>{{ form.is_available }}</p>
+    <p>{{ form.course }}</p>
+    <div class="d-flex justify-content-around">
+        <input type="submit" value="Add" class="btn btn-outline-primary btn-rounded">
+        <a href="{% url 'home' %}" class="btn btn-outline-primary btn-rounded">Cancel</a>
+    </div>
 </form>
 {% endblock main %}

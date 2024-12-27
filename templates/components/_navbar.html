@@ -45,7 +45,6 @@
         </li>
       </ul>
       <!-- Left links -->
-
       <!--dropdown button-->
      <div class="dropdown">
         <button
@@ -66,14 +65,54 @@
         </ul>
       </div>
       <!--dropdown button-->
+      &nbsp; &nbsp;
+      {{ request.user.username }}
+
+        {% if not request.user.is_authenticated %}
 
       <div class="d-flex align-items-center">
-        <button data-mdb-ripple-init type="button" class="btn btn-link px-3 me-2">
+        <a href="{% url 'login_view' %}" data-mdb-ripple-init class="btn btn-link px-3 me-2">
           Login
-        </button>
-        <button data-mdb-ripple-init type="button" class="btn btn-primary me-3">
+        </a>
+        <a  href="{% url 'register' %}" data-mdb-ripple-init  class="btn btn-primary me-3">
           Sign up
-        </button>
+        </a>
+          {% else %}
+          &nbsp; &nbsp;
+        <!-- Avatar -->
+        <div class="dropdown">
+          <a
+            data-mdb-dropdown-init
+            class="dropdown-toggle d-flex align-items-center hidden-arrow"
+            href="#"
+            id="navbarDropdownMenuAvatar"
+            role="button"
+            aria-expanded="false"
+          >
+            <img
+              src="https://mdbcdn.b-cdn.net/img/new/avatars/2.webp"
+              class="rounded-circle"
+              height="40"
+              alt="Black and White Portrait of a Man"
+              loading="lazy"
+            />
+          </a>
+          <ul
+            class="dropdown-menu dropdown-menu-end"
+            aria-labelledby="navbarDropdownMenuAvatar"
+          >
+            <li>
+              <a class="dropdown-item" href="#">My profile</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="#">Settings</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="{% url 'logout_view' %}">Logout</a>
+            </li>
+          </ul>
+        </div>
+          {% endif %}
       </div>
     </div>
     <!-- Collapsible wrapper -->

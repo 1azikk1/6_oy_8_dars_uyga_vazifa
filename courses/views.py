@@ -1,7 +1,9 @@
 from django.shortcuts import render, redirect
 from .models import Course, Lesson
-from .forms import LessonForm, CourseForm
+from .forms import LessonForm, CourseForm, RegisterForm, LoginForm
 from django.contrib import messages
+from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth.models import User
 
 
 def home(request):
@@ -42,7 +44,7 @@ def add_lessons(request):
     if request.method == 'POST':
         form = LessonForm(data=request.POST, files=request.FILES)
         if form.is_valid():
-            lesson = Lesson.objects.create(**form.cleaned_data)
+            lesson = form.create()
             messages.success(request, "Dars muvaffaqiyatli tarzda qo'shildi")
             return redirect('detail_lesson', lesson_id=lesson.pk)
 
@@ -58,7 +60,7 @@ def add_courses(request):
     if request.method == 'POST':
         form = CourseForm(data=request.POST, files=request.FILES)
         if form.is_valid():
-            course = Course.objects.create(**form.cleaned_data)
+            course = form.create()
             messages.success(request, "Kurs muvaffaqiyatli tarzda qo'shildi!")
             return redirect('home')
 
@@ -77,15 +79,7 @@ def update_lesson(request, lesson_id):
     if request.method == 'POST':
         form = LessonForm(data=request.POST, files=request.FILES)
         if form.is_valid():
-            lesson.name = form.cleaned_data.get('name')
-            lesson.teacher = form.cleaned_data.get('teacher')
-            lesson.description = form.cleaned_data.get('description')
-            lesson.photo = form.cleaned_data.get('photo') if form.cleaned_data.get('photo') else lesson.photo
-            lesson.student_count = form.cleaned_data.get('student_count')
-            lesson.price = form.cleaned_data.get('price')
-            lesson.is_available = form.cleaned_data.get('is_available')
-            lesson.course = form.cleaned_data.get('course')
-            lesson.save()
+            form.update(lesson)
             messages.success(request, "Dars muvaffaqiyatli tarzda o'zgartirildi!")
             return redirect('detail_lesson', lesson_id=lesson.pk)
 
@@ -120,3 +114,47 @@ def delete_lesson(request, lesson_id):
     }
     messages.warning(request, "Ushbu darsni o'chirmoqchimisiz?")
     return render(request, 'confirm_delete.html', context)
+
+
+def register(request):
+    if request.method == 'POST':
+        form = RegisterForm(data=request.POST)
+        if form.is_valid():
+            password = form.cleaned_data.get('password')
+            password_confirm = form.cleaned_data.get('password_confirm')
+            if password == password_confirm:
+                user = User.objects.create_user(
+                    form.cleaned_data.get('username'),
+                    form.cleaned_data.get('email'),
+                    password
+                )
+                messages.success(request, "Foydalanuvchi muvaffaqiyatli tarzda kiritildi!")
+                return redirect('login_view')
+    context = {
+        'form': RegisterForm(),
+        'title': 'Sign Up Page'
+    }
+    return render(request, 'auth/register.html', context)
+
+
+def login_view(request):
+    if request.method == 'POST':
+        form = LoginForm(data=request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user = authenticate(username=username, password=password)
+            messages.success(request, f"{username} web sahifamizga xush kelibsiz!")
+            login(request, user)
+            return redirect('home')
+    context = {
+        'form': LoginForm(),
+        'title': 'Login Page'
+    }
+    return render(request, 'auth/login.html', context)
+
+
+def logout_view(request):
+    logout(request)
+    messages.warning(request, "Siz sahifadan chiqib ketdingiz!")
+    return redirect('login_view')

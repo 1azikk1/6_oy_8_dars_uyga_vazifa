@@ -1,12 +1,15 @@
 from django import forms
 from .models import Course, Lesson
+from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
+from .validators import *
 
 
 class LessonForm(forms.Form):
     name = forms.CharField(max_length=50, widget=forms.TextInput(attrs={
         'placeholder': "Dars nomi",
         'class': 'form-control'
-    }), label='Dars nomi')
+    }), label='Dars nomi', validators=[lesson_validator])
     teacher = forms.CharField(max_length=100, widget=forms.TextInput(attrs={
         'placeholder': "O'qituvchi ismi",
         'class': 'form-control'
@@ -54,7 +57,7 @@ class CourseForm(forms.Form):
     name = forms.CharField(max_length=50, label='Kurs nomi', widget=forms.TextInput(attrs={
         'placeholder': 'Kurs nomini kiriting',
         'class': 'form-control'
-    }))
+    }), validators=[course_validator])
 
     def create(self):
         course = Course.objects.create(**self.cleaned_data)
@@ -65,11 +68,11 @@ class RegisterForm(forms.Form):
     username = forms.CharField(max_length=100, widget=forms.TextInput(attrs={
         'id': 'form3Example1cg',
         'class': 'form-control form-control-lg'
-    }))
+    }), validators=[username_validator, user_availibility_check])
     email = forms.EmailField(widget=forms.EmailInput(attrs={
         'id': 'form3Example3cg',
         'class': 'form-control form-control-lg'
-    }))
+    }), validators=[email_validator])
     password = forms.CharField(min_length=8, widget=forms.PasswordInput(attrs={
         'id': 'form3Example4cg',
         'class': 'form-control form-control-lg'
@@ -79,13 +82,32 @@ class RegisterForm(forms.Form):
         'class': 'form-control form-control-lg'
     }))
 
+    def clean(self):
+        cleaned_data = super().clean()
+        password = self.cleaned_data.get('password')
+        password_confirm = self.cleaned_data.get('password_confirm')
+        if password_confirm != password:
+            raise ValidationError("Parollar bir xil bo'lishi kerak!")
+        return cleaned_data
+
 
 class LoginForm(forms.Form):
     username = forms.CharField(max_length=100, widget=forms.TextInput(attrs={
         'id': 'typeEmailX-2',
         'class': 'form-control form-control-lg'
-    }))
+    }), validators=[login_validator])
     password = forms.CharField(min_length=8, widget=forms.PasswordInput(attrs={
         'id': 'typePasswordX-2',
         'class': 'form-control form-control-lg'
     }))
+
+
+class CommentForm(forms.Form):
+    text = forms.CharField(max_length=1000, widget=forms.Textarea(attrs={
+        'class': 'form-control',
+        'rows': 2,
+    }), label='Izoh', validators=[comment_validator])
+
+    def update(self, comment):
+        comment.text = self.cleaned_data.get('text')
+        comment.save()

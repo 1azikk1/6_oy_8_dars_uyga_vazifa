@@ -5,7 +5,6 @@
 {{ title }}
 {% endblock title %}
 
-
 {% block main %}
 
 <!--cards-->
@@ -47,4 +46,47 @@
     <a href="{% url 'home' %} " class="btn btn-outline-primary btn-rounded" data-mdb-ripple-init  data-mdb-ripple-color="dark">
         Ortga</a>
 </div>
+
+{% if request.user.is_authenticated %}
+<form method="post" action="{% url 'comment_save' lesson.pk %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <div class="d-flex justify-content-end">
+        <button type="submit" class="btn btn-outline-primary btn-rounded">
+            <i class="fas fa-paper-plane"></i> Izoh yuborish
+        </button>
+    </div>
+</form>
+{% else %}
+<p>Izoh qoldirish uchun saytga login qiling: <a href="{% url 'login_view' %}">Login</a></p>
+{% endif %}
+
+{% if comments %}
+    {% for comment in comments %}
+    <div class="card text-center mt-3 delete-comment-form">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <span>{{ comment.author.username }}</span>
+            {% if request.user == comment.author or request.user.is_superuser %}
+            <form method="post" action="{% url 'delete_comment' comment.id %}" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-link text-danger p-0">
+                    <i class="far fa-trash-alt"></i>
+                </button>
+                <a href="{% url 'comment_update' comment.id %}">
+                    Edit
+                </a>
+            </form>
+            {% endif %}
+        </div>
+        <div class="card-body">
+            <p class="card-text">{{ comment.text }}</p>
+        </div>
+        <div class="card-footer text-muted">{{ comment.created }}</div>
+    </div>
+    {% endfor %}
+{% else %}
+    <p>Hozircha izohlar mavjud emas. Birinchi bo'lib izoh qoldiring!</p>
+{% endif %}
+
 {% endblock main %}

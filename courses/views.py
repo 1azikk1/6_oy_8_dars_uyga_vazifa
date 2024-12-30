@@ -1,6 +1,6 @@
-from django.shortcuts import render, redirect
-from .models import Course, Lesson
-from .forms import LessonForm, CourseForm, RegisterForm, LoginForm
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import Course, Lesson, Comment
+from .forms import LessonForm, CourseForm, RegisterForm, LoginForm, CommentForm
 from django.contrib import messages
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.models import User
@@ -33,7 +33,9 @@ def detail_lesson(request, lesson_id):
         lesson = Lesson.objects.get(pk=lesson_id)
         context = {
             'lesson': lesson,
-            'title': lesson.description
+            'title': lesson.description,
+            'form': CommentForm(),
+            'comments': Comment.objects.filter(lesson_id=lesson_id)
         }
         return render(request, 'detail.html', context)
     except:
@@ -47,6 +49,8 @@ def add_lessons(request):
             lesson = form.create()
             messages.success(request, "Dars muvaffaqiyatli tarzda qo'shildi")
             return redirect('detail_lesson', lesson_id=lesson.pk)
+        else:
+            messages.error(request, "Bunday dars mavjud!")
 
     form = LessonForm()
     context = {
@@ -63,7 +67,8 @@ def add_courses(request):
             course = form.create()
             messages.success(request, "Kurs muvaffaqiyatli tarzda qo'shildi!")
             return redirect('home')
-
+        else:
+            messages.error(request, "Bunday kurs mavjud!")
     form = CourseForm()
     context = {
         'form': form,
@@ -130,8 +135,10 @@ def register(request):
                 )
                 messages.success(request, "Foydalanuvchi muvaffaqiyatli tarzda kiritildi!")
                 return redirect('login_view')
+    else:
+        form = RegisterForm()
     context = {
-        'form': RegisterForm(),
+        'form': form,
         'title': 'Sign Up Page'
     }
     return render(request, 'auth/register.html', context)
@@ -147,6 +154,8 @@ def login_view(request):
             messages.success(request, f"{username} web sahifamizga xush kelibsiz!")
             login(request, user)
             return redirect('home')
+        else:
+            messages.error(request, "Username yoki parol xato!")
     context = {
         'form': LoginForm(),
         'title': 'Login Page'
@@ -158,3 +167,66 @@ def logout_view(request):
     logout(request)
     messages.warning(request, "Siz sahifadan chiqib ketdingiz!")
     return redirect('login_view')
+
+
+def comment_save(request, lesson_id):
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            form = CommentForm(data=request.POST)
+            if form.is_valid():
+                lesson = get_object_or_404(Lesson, pk=lesson_id)
+                Comment.objects.create(
+                    text=form.cleaned_data.get('text'),
+                    author=request.user,
+                    lesson=lesson
+                )
+                messages.success(request, "Izoh qo'shildi!")
+            else:
+                messages.error(request, "Izoh uchun matn berilgan miqdordan oshib ketdi!")
+
+        return redirect('detail_lesson', lesson_id=lesson_id)
+    messages.error(request, "Izoh qo'shish uchun avval saytga kiring!!!")
+    return redirect('login_view')
+
+
+def delete_comment(request, comment_id):
+    if request.method == 'POST':
+        comment = get_object_or_404(Comment, pk=comment_id)
+        if request.user == comment.author or request.user.is_superuser:
+            lesson = comment.lesson.pk
+            comment.delete()
+            messages.success(request, "Izoh o'chirildi!")
+            return redirect('detail_lesson', lesson_id=lesson)
+
+        messages.error(request, "Izohni o'chirsh uchun avval login qiling!")
+        return redirect('login_view')
+
+
+def comment_update(request, comment_id):
+    if request.user.is_authenticated:
+        comment = get_object_or_404(Comment, pk=comment_id)
+        lesson_id = comment.lesson.id
+
+        if request.user == comment.author or request.user.is_superuser:
+            if request.method == 'POST':
+                form = CommentForm(data=request.POST)
+                if form.is_valid():
+                    form.update(comment)
+                    messages.success(request, "Izoh muvaffaqiyatli o'zgartirildi.")
+                    return redirect('detail_lesson', lesson_id=lesson_id)
+
+            else:
+                form = CommentForm(initial={'text': comment.text})
+
+            context = {
+                'lesson': comment.lesson,
+                'form': form,
+                'update': True,
+                'comments': Comment.objects.filter(pk=comment_id)
+            }
+            return render(request, 'detail.html', context)
+
+    else:
+        messages.error(request, "Avval syatga kirishingiz kerak!")
+        return redirect('login_view')
+

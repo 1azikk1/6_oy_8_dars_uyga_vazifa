@@ -10,3 +10,13 @@ setTimeout(() => {
         messagesDiv.remove();
     }
 }, 5000);
+
+//for form confirmation
+
+document.querySelectorAll('.delete-comment-form').forEach(form => {
+    form.addEventListener('submit', function(event) {
+        if (!confirm("Siz rostdan ham bu izohni o'chirmoqchimisiz?")) {
+            event.preventDefault();
+        }
+    });
+});

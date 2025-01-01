@@ -70,7 +70,7 @@
             {% if request.user == comment.author or request.user.is_superuser %}
             <form method="post" action="{% url 'delete_comment' comment.id %}" style="display: inline;">
                 {% csrf_token %}
-                <button type="submit" class="btn btn-link text-danger p-0">
+                <button id="deletecomment" class="btn btn-link text-danger p-0">
                     <i class="far fa-trash-alt"></i>
                 </button>
                 <a href="{% url 'comment_update' comment.id %}">

@@ -175,11 +175,7 @@ def comment_save(request, lesson_id):
             form = CommentForm(data=request.POST)
             if form.is_valid():
                 lesson = get_object_or_404(Lesson, pk=lesson_id)
-                Comment.objects.create(
-                    text=form.cleaned_data.get('text'),
-                    author=request.user,
-                    lesson=lesson
-                )
+                form.save(Comment, request.user, lesson)
                 messages.success(request, "Izoh qo'shildi!")
             else:
                 messages.error(request, "Izoh uchun matn berilgan miqdordan oshib ketdi!")
@@ -190,7 +186,7 @@ def comment_save(request, lesson_id):
 
 
 def delete_comment(request, comment_id):
-    if request.method == 'POST':
+    if request.user.is_authenticated:
         comment = get_object_or_404(Comment, pk=comment_id)
         if request.user == comment.author or request.user.is_superuser:
             lesson = comment.lesson.pk
@@ -198,20 +194,17 @@ def delete_comment(request, comment_id):
             messages.success(request, "Izoh o'chirildi!")
             return redirect('detail_lesson', lesson_id=lesson)
 
-        messages.error(request, "Izohni o'chirsh uchun avval login qiling!")
-        return redirect('login_view')
-
 
 def comment_update(request, comment_id):
     if request.user.is_authenticated:
         comment = get_object_or_404(Comment, pk=comment_id)
         lesson_id = comment.lesson.id
-
         if request.user == comment.author or request.user.is_superuser:
             if request.method == 'POST':
                 form = CommentForm(data=request.POST)
                 if form.is_valid():
                     form.update(comment)
+
                     messages.success(request, "Izoh muvaffaqiyatli o'zgartirildi.")
                     return redirect('detail_lesson', lesson_id=lesson_id)
 
@@ -222,11 +215,11 @@ def comment_update(request, comment_id):
                 'lesson': comment.lesson,
                 'form': form,
                 'update': True,
-                'comments': Comment.objects.filter(pk=comment_id)
+                'comment': comment
             }
+
             return render(request, 'detail.html', context)
 
     else:
-        messages.error(request, "Avval syatga kirishingiz kerak!")
+        messages.error(request, "Iltimos, tizimga kirishingiz kerak.")
         return redirect('login_view')
-

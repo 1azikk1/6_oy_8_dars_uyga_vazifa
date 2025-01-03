@@ -49,10 +49,9 @@ def add_lessons(request):
             lesson = form.create()
             messages.success(request, "Dars muvaffaqiyatli tarzda qo'shildi")
             return redirect('detail_lesson', lesson_id=lesson.pk)
-        else:
-            messages.error(request, "Bunday dars mavjud!")
 
-    form = LessonForm()
+    else:
+        form = LessonForm()
     context = {
         'form': form,
         'title': "Dars qo'shish"
@@ -67,9 +66,8 @@ def add_courses(request):
             course = form.create()
             messages.success(request, "Kurs muvaffaqiyatli tarzda qo'shildi!")
             return redirect('home')
-        else:
-            messages.error(request, "Bunday kurs mavjud!")
-    form = CourseForm()
+    else:
+        form = CourseForm()
     context = {
         'form': form,
         'title': "Kurs qo'shish"
@@ -154,10 +152,10 @@ def login_view(request):
             messages.success(request, f"{username} web sahifamizga xush kelibsiz!")
             login(request, user)
             return redirect('home')
-        else:
-            messages.error(request, "Username yoki parol xato!")
+    else:
+        form = LoginForm()
     context = {
-        'form': LoginForm(),
+        'form': form,
         'title': 'Login Page'
     }
     return render(request, 'auth/login.html', context)

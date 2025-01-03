@@ -49,10 +49,9 @@ def add_lessons(request):
             lesson = form.create()
             messages.success(request, "Dars muvaffaqiyatli tarzda qo'shildi")
             return redirect('detail_lesson', lesson_id=lesson.pk)
-        else:
-            messages.error(request, "Bunday dars mavjud!")
+    else:
 
-    form = LessonForm()
+        form = LessonForm()
     context = {
         'form': form,
         'title': "Dars qo'shish"
@@ -67,9 +66,8 @@ def add_courses(request):
             course = form.create()
             messages.success(request, "Kurs muvaffaqiyatli tarzda qo'shildi!")
             return redirect('home')
-        else:
-            messages.error(request, "Bunday kurs mavjud!")
-    form = CourseForm()
+    else:
+        form = CourseForm()
     context = {
         'form': form,
         'title': "Kurs qo'shish"
@@ -154,10 +152,10 @@ def login_view(request):
             messages.success(request, f"{username} web sahifamizga xush kelibsiz!")
             login(request, user)
             return redirect('home')
-        else:
-            messages.error(request, "Username yoki parol xato!")
+    else:
+        form = LessonForm()
     context = {
-        'form': LoginForm(),
+        'form': form,
         'title': 'Login Page'
     }
     return render(request, 'auth/login.html', context)
@@ -181,10 +179,9 @@ def comment_save(request, lesson_id):
                     lesson=lesson
                 )
                 messages.success(request, "Izoh qo'shildi!")
-            else:
-                messages.error(request, "Izoh uchun matn berilgan miqdordan oshib ketdi!")
 
         return redirect('detail_lesson', lesson_id=lesson_id)
+
     messages.error(request, "Izoh qo'shish uchun avval saytga kiring!!!")
     return redirect('login_view')
 
@@ -211,10 +208,10 @@ def comment_update(request, comment_id):
             if request.method == 'POST':
                 form = CommentForm(data=request.POST)
                 if form.is_valid():
-                    form.update(comment)
+                    comment.text = form.cleaned_data['text']
+                    comment.save()
                     messages.success(request, "Izoh muvaffaqiyatli o'zgartirildi.")
                     return redirect('detail_lesson', lesson_id=lesson_id)
-
             else:
                 form = CommentForm(initial={'text': comment.text})
 
@@ -222,11 +219,10 @@ def comment_update(request, comment_id):
                 'lesson': comment.lesson,
                 'form': form,
                 'update': True,
-                'comments': Comment.objects.filter(pk=comment_id)
+                'comment': comment
             }
             return render(request, 'detail.html', context)
 
     else:
-        messages.error(request, "Avval syatga kirishingiz kerak!")
+        messages.error(request, "Avval saytga kirishingiz kerak!")
         return redirect('login_view')
-

@@ -24,11 +24,11 @@ class LessonForm(forms.Form):
     student_count = forms.IntegerField(widget=forms.NumberInput(attrs={
         'placeholder': "Talabalar soni",
         'class': 'form-control'
-    }), label='Talabalar soni')
+    }), label='Talabalar soni', validators=[student_count_validator])
     price = forms.IntegerField(widget=forms.NumberInput(attrs={
         'placeholder': 'Dars narxi',
         'class': 'form-control'
-    }), label='Dars narxi')
+    }), label='Dars narxi', validators=[price_validator])
     is_available = forms.BooleanField(widget=forms.CheckboxInput(attrs={
         'class': 'form-check-input',
         'checked': 'checked'
@@ -101,6 +101,17 @@ class LoginForm(forms.Form):
         'class': 'form-control form-control-lg'
     }))
 
+    def clean(self):
+        cleaned_data = super().clean()
+        username = cleaned_data.get('username')
+        password = cleaned_data.get('password')
+
+        if username and password:
+            try:
+                password_check_by_username(username, password)
+            except ValidationError as e:
+                self.add_error('password', e.message)
+
 
 class CommentForm(forms.Form):
     text = forms.CharField(max_length=1000, widget=forms.Textarea(attrs={
@@ -109,5 +120,5 @@ class CommentForm(forms.Form):
     }), label='Izoh', validators=[comment_validator])
 
     def update(self, comment):
-        comment.text = self.cleaned_data.get('text')
+        comment.text = self.cleaned_data['text']
         comment.save()

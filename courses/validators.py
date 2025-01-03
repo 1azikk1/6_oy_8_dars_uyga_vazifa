@@ -1,3 +1,4 @@
+from django.contrib.auth.hashers import check_password
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
 from .models import *
@@ -33,9 +34,7 @@ def course_validator(value):
 
 # login validator
 def login_validator(value):
-    if User.objects.filter(username=value).exists():
-        pass
-    else:
+    if not User.objects.filter(username=value).exists():
         raise ValidationError("Bunday foydalanuvchi mavjud emas!")
 
 
@@ -43,3 +42,22 @@ def login_validator(value):
 def comment_validator(value):
     if len(value) > 1000:
         raise ValidationError("Izoh matni miqdordan oshib ketdi!")
+
+
+# student count validator
+def student_count_validator(value):
+    if value < 0:
+        raise ValidationError("Talabalar sonini ifodalash uchun musbat son kiriting!")
+
+
+# price validator
+def price_validator(value):
+    if value < 0:
+        raise ValidationError("Narxni kiritishda musbat sondan foydalaning!")
+
+
+# password check by username
+def password_check_by_username(username, password):
+    user = User.objects.get(username=username)
+    if not check_password(password, user.password):
+        raise ValidationError("Noto'g'ri parol kiritildi!")

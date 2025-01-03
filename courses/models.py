@@ -46,6 +46,10 @@ class Comment(models.Model):
     def __str__(self):
         return f"{self.author.username}|{self.text[:20]}|{self.lesson.name}"
 
+    def update(self, text):
+        self.text = text
+        self.save()
+
     class Meta:
         verbose_name = 'fikr '
         verbose_name_plural = 'fikrlar'

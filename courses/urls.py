@@ -12,8 +12,8 @@ urlpatterns = [
     path('courses/add/', add_courses, name='add_courses'),
 
     path('lessons/<int:lesson_id>/comment/save/', comment_save, name='comment_save'),
-    path('lesson/comment/<int:comment_id>/delete/', delete_comment, name='delete_comment'),
-    path('lesson/comment/<int:comment_id>/update/', comment_update, name='comment_update'),
+    path('comment/<int:comment_id>/delete/', delete_comment, name='delete_comment'),
+    path('comment/<int:comment_id>/update/', comment_update, name='comment_update'),
 
     path('register/', register, name='register'),
     path('login/', login_view, name='login_view'),

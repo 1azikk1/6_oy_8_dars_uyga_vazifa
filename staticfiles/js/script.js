@@ -13,10 +13,15 @@ setTimeout(() => {
 
 //for form confirmation
 
-document.querySelectorAll('.delete-comment-form').forEach(form => {
-    form.addEventListener('submit', function(event) {
-        if (!confirm("Siz rostdan ham bu izohni o'chirmoqchimisiz?")) {
-            event.preventDefault();
-        }
+document.addEventListener('DOMContentLoaded', function () {
+    const deleteButtons = document.querySelectorAll('#deletecomment');
+
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', function (event) {
+            const confirmation = confirm("Bu izohni o'chirishni xohlaysizmi?");
+            if (!confirmation) {
+                event.preventDefault();
+            }
+        });
     });
 });

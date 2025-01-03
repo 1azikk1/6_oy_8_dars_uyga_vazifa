@@ -119,6 +119,13 @@ class CommentForm(forms.Form):
         'rows': 2,
     }), label='Izoh', validators=[comment_validator])
 
+    def save(self, comment, user, lesson):
+        comment.objects.create(
+            text=self.cleaned_data.get('text'),
+            author=user,
+            lesson=lesson
+        )
+
     def update(self, comment):
         comment.text = self.cleaned_data['text']
         comment.save()
